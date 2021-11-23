@@ -1,19 +1,26 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { PeliculaDTO } from '../pelicula';
+import { PeliculasService } from '../peliculas.service';
 
 @Component({
   selector: 'app-listado-peliculas',
   templateUrl: './listado-peliculas.component.html',
-  styleUrls: ['./listado-peliculas.component.css']
+  styleUrls: ['./listado-peliculas.component.css'],
 })
-export class  ListadoPeliculasComponent implements OnInit {
-  @Input()
-  peliculas: any;
+export class ListadoPeliculasComponent implements OnInit {
+  constructor(private peliculasService: PeliculasService) {}
 
-  constructor() {}
+  @Input()
+  peliculas!: PeliculaDTO[];
+
+  @Output()
+  borrado: EventEmitter<void> = new EventEmitter<void>();
 
   ngOnInit(): void {}
 
-  remover(indicePelicula: number): void {
-    this.peliculas.splice(indicePelicula, 1);
+  borrar(peliculaId: number): void {
+    this.peliculasService
+      .borrar(peliculaId)
+      .subscribe(() => this.borrado.emit());
   }
 }
